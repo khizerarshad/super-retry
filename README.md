@@ -2,7 +2,6 @@
 
 A robust retry library for Node.js with middleware support, policy-driven configurations, and OpenTelemetry integration.
 
-![Retry Flow Diagram](https://via.placeholder.com/800x400.png?text=Retry+Flow+Diagram)
 
 ## Features ✨
 
@@ -158,13 +157,13 @@ graph LR
   E -->|No| G[Error Status]
 ```
 
-## Benchmarks 📊
+<!--## Benchmarks 📊
 
 | Library       | Throughput (ops/sec) | Memory Usage |
 |---------------|----------------------|--------------|
 | Super-Retry   | 15,432               | 4.2 MB       |
 | Async-Retry   | 12,189               | 3.8 MB       |
-| P-Retry       | 10,456               | 3.5 MB       |
+| P-Retry       | 10,456               | 3.5 MB       | -->
 
 ## Contributing 🤝
 
