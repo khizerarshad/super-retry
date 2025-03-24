@@ -1,6 +1,6 @@
 {
   "name": "super-retry",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Robust retry library with middleware, policies, and OpenTelemetry integration",
   "main": "dist/core/retry.js",
   "types": "dist/core/retry.d.ts",
