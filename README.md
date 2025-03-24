@@ -175,5 +175,6 @@ graph LR
 5. Open a PR!
 
 ---
-
+[![npm version](https://img.shields.io/npm/v/super-retry.svg)](https://www.npmjs.com/package/super-retry)
+[![GitHub license](https://img.shields.io/github/license/khizerarshad/super-retry.svg)](https://github.com/khizerarshad/super-retry)
 **License**: MIT | **Author**: Khizer Arshad | **Version**: 1.0.0
