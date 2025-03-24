@@ -1,0 +1,7 @@
+src/
+test/
+tsconfig.json
+jest.config.js
+*.md
+.editorconfig
+.gitignore
