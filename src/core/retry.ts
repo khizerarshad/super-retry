@@ -87,22 +87,18 @@ export class Retry {
 
   private calculateDelay(): number {
     const { strategy, initialDelayMs } = this.options;
-  
-  // Check for built-in strategies first
-  switch (strategy as BuiltInBackoffStrategy) {
-    case 'fixed':
-      return initialDelayMs;
-    case 'exponential':
-      return initialDelayMs * (2 ** (this.attempts - 1));
-    case 'jitter':
-      return initialDelayMs * (2 ** (this.attempts - 1)) * (0.5 + Math.random());
-    default:
-      // Check for custom strategy
-      const customStrategy = getStrategy(strategy);
-      if (customStrategy) {
-        return customStrategy(this.attempts, initialDelayMs);
-      }
-      throw new Error(`Unknown strategy: ${strategy}`);
+    
+    // Handle string-based strategies (built-in or registered)
+    if (typeof strategy === 'string') {
+      const strategyFn = getStrategy(strategy);
+      return strategyFn(this.attempts, initialDelayMs);
     }
+  
+    // Handle direct strategy functions
+    if (typeof strategy === 'function') {
+      return strategy(this.attempts, initialDelayMs);
+    }
+  
+    throw new Error(`Invalid strategy type: ${typeof strategy}`);
   }
 }

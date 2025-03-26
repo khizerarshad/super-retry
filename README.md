@@ -3,41 +3,18 @@
 A robust retry library for Node.js with middleware support, policy-driven configurations, and OpenTelemetry integration.
 
 [![npm version](https://img.shields.io/npm/v/super-retry.svg)](https://www.npmjs.com/package/super-retry)
-[![GitHub license](https://img.shields.io/github/license/khizerarshad/super-retry.svg)](https://github.com/khizerarshad/super-retry)
+[![GitHub stars](https://img.shields.io/github/stars/khizerarshad/super-retry.svg?style=social)](https://github.com/khizerarshad/super-retry)
+[![GitHub issues](https://img.shields.io/github/issues/khizerarshad/super-retry.svg)](https://github.com/khizerarshad/super-retry/issues)
+[![Open in GitHub](https://img.shields.io/badge/View%20on-GitHub-2ea44f.svg)](https://github.com/khizerarshad/super-retry)
 
-## Why Choose Super-Retry? 🏆
+## 🚀 Getting Started
 
-### Key Differentiators
-| Feature                | Super-Retry          | Typical Alternatives   |
-|------------------------|----------------------|------------------------|
-| Configuration          | YAML/JSON Policies   | Code-only              |
-| Extensibility          | Middleware Pipeline  | Monolithic             |
-| AI/ML Ready            | Built-in LLM Support | Generic                |
-| Observability          | OpenTelemetry Native | Manual Instrumentation |
-| Strategy System        | Customizable Plugins | Fixed Algorithms       |
-
-**Why It Matters**:
-- 🗂 **Declarative Configs**: Modify retry behavior without code changes
-- 🧩 **Modular Architecture**: Add features via middleware plugins
-- 🔍 **Production Insights**: Built-in distributed tracing
-- 🤖 **AI First**: Special handling for LLM API patterns
-
-## Features ✨
-
-- **Multiple Strategies**: Fixed, Exponential, Jitter backoffs
-- **Declarative Policies**: YAML/JSON configuration support  
-- **Middleware System**: Add logging, metrics, caching  
-- **LLM Optimized**: Built-in AI API error handling  
-- **Observability**: OpenTelemetry spans & events  
-
-## Installation 📦
-
+### Installation
 ```bash
 npm install super-retry
 ```
 
-## Quick Start 🚀
-
+### Quick Start
 ```typescript
 import { Retry } from 'super-retry';
 
@@ -47,65 +24,32 @@ const retry = new Retry({
   initialDelayMs: 1000
 });
 
-await retry.execute(async () => {
-  await fetch('https://api.example.com');
+const result = await retry.execute(async () => {
+  const response = await fetch('https://api.example.com/data');
+  if (!response.ok) throw new Error('API request failed');
+  return response.json();
 });
 ```
 
-## Real-World Scenarios 🎯
+## 🌟 Key Features
 
-### 1. E-Commerce Payment Processing
-**Challenge**: Handling payment gateway timeouts during peak traffic  
-**Solution**:
-```typescript
-const paymentRetry = new Retry({
-  strategy: 'jitter',
-  maxAttempts: 3,
-  initialDelayMs: 1500,
-  retryIf: err => err.code === 'ECONNRESET'
-});
-```
-**Benefits**:  
-- Prevents duplicate charges with attempt tracking
-- Jitter randomization avoids merchant-side throttling
+| Feature                | Description                                                                 |
+|------------------------|-----------------------------------------------------------------------------|
+| 🧩 Modular Middleware  | Extend functionality with custom middleware layers                         |
+| 📜 Declarative Policies| Configure retry behavior via JSON/YAML files                               |
+| 🔄 Multiple Strategies  | Built-in + custom backoff algorithms (Fibonacci, Jitter, etc.)             |
+| 📊 Observability Ready | Native OpenTelemetry integration for production monitoring                 |
+| 🤖 AI/LLM Optimized    | Special handling for large language model API patterns                     |
+| 🛠 Type Safe           | Full TypeScript support with strict type checking                          |
 
-### 2. IoT Device Communication
-**Challenge**: Unstable connections in remote deployments  
-**Solution**:
-```yaml
-# policies/iot-retry.yml
-maxAttempts: 7
-strategy: exponential
-initialDelayMs: 3000
-conditions:
-  - errorType: 'NetworkError'
-```
-```typescript
-const sensorRetry = new Retry(loadPolicy('iot-retry.yml'));
-```
-**Benefits**:  
-- Exponential backoff preserves battery life
-- Central policy management across device fleets
+## 📚 Examples & Guides
 
-### 3. AI Service Integration
-**Challenge**: Handling GPT-4 API rate limits  
-**Solution**:
-```typescript
-import { isRetriableLLMError } from 'super-retry/llm';
+Explore our comprehensive examples on GitHub:
 
-const aiRetry = new Retry({
-  strategy: 'exponential',
-  maxAttempts: 5,
-  retryIf: isRetriableLLMError
-});
-```
-**Benefits**:  
-- Automatic backoff on 429 errors
-- Compliance with AI provider SLAs
-
-## Core Concepts 🧠
-
-### 1. Retry Strategies
+- [Basic API Retry](https://github.com/khizerarshad/super-retry-examples/tree/main/basic-api-retry)
+- [Custom Strategies](https://github.com/khizerarshad/super-retry-examples/tree/main/custom-strategy)
+- [Conditional Retries](https://github.com/khizerarshad/super-retry-examples/tree/main/conditional-retry)
+- [Full Feature Showcase](https://github.com/khizerarshad/super-retry-examples/tree/main/full-feature)
 
 ```mermaid
 graph TD
@@ -116,223 +60,95 @@ graph TD
   E --> F{Attempts Left?}
   F -->|Yes| B
   F -->|No| G[Throw Error]
-  style A fill:#4CAF50,stroke:#388E3C
-  style G fill:#f44336,stroke:#d32f2f
 ```
 
-| Strategy      | Formula                      | Best For                |
-|---------------|------------------------------|-------------------------|
-| Fixed         | `initialDelay`               | Cron jobs, batch processing |
-| Exponential   | `initialDelay * 2^(attempt)` | External APIs, databases |
-| Jitter        | `exponential * random(0.5-1)`| Distributed systems, IoT |
+## 🛠 Advanced Usage
 
-### 2. Middleware Pipeline
-
-```mermaid
-sequenceDiagram
-  participant App as Application
-  participant MW1 as Middleware 1
-  participant MW2 as Middleware 2
-  participant Task as Original Task
-  
-  App->>MW1: Execute
-  activate MW1
-  MW1->>MW2: Next()
-  activate MW2
-  MW2->>Task: Next()
-  activate Task
-  Task-->>MW2: Result/Error
-  deactivate Task
-  MW2-->>MW1: Result/Error
-  deactivate MW2
-  MW1-->>App: Final Result
-  deactivate MW1
-```
-
-## Comprehensive Examples 🧪
-
-### 1. Basic API Retry
+### Custom Strategies
 ```typescript
-import { Retry } from 'super-retry';
+import { Retry, registerStrategy } from 'super-retry';
+
+// Register custom Fibonacci strategy
+registerStrategy('fibonacci', (attempt: number, base: number) => 
+  [0, 1, 1, 2, 3, 5, 8][attempt] * base
+);
 
 const retry = new Retry({
-  strategy: 'jitter',
-  maxAttempts: 3,
-  initialDelayMs: 1000
+  strategy: 'fibonacci',
+  maxAttempts: 5,
+  initialDelayMs: 100
 });
-
-async function fetchUserData() {
-  const response = await fetch('https://api.example.com/users');
-  if (!response.ok) throw new Error('API request failed');
-  return response.json();
-}
-
-const userData = await retry.execute(fetchUserData);
 ```
 
-### 2. Policy-Driven Configuration
-```yaml
-# retry-policy.yml
-maxAttempts: 5
-initialDelayMs: 2000
-strategy: exponential
-retryIf:
-  - statusCode: 429
-  - errorType: 'DatabaseConnectionError'
-  - messageContains: 'timeout'
-```
-
+### Middleware Pipeline
 ```typescript
-import { Retry, loadPolicyFromYAML } from 'super-retry';
-import fs from 'fs';
-
-const policy = loadPolicyFromYAML(fs.readFileSync('retry-policy.yml', 'utf-8'));
-const retry = new Retry(policy);
-
-await retry.execute(databaseTransaction);
-```
-
-### 3. Advanced Middleware Chain
-```typescript
-import { Retry } from 'super-retry';
-
-const retry = new Retry({ maxAttempts: 4 })
+const retry = new Retry({ maxAttempts: 3 })
   .use(async (task, ctx, next) => {
-    console.log(`Attempt ${ctx.attempt + 1} started`);
     const start = Date.now();
     try {
       return await next();
     } finally {
-      console.log(`Attempt ${ctx.attempt + 1} took ${Date.now() - start}ms`);
+      console.log(`Attempt ${ctx.attempt+1} took ${Date.now()-start}ms`);
     }
   })
   .use(async (task, ctx, next) => {
-    metrics.increment('retry.attempt', { count: ctx.attempt });
-    return next();
+    try {
+      return await next();
+    } catch (error) {
+      console.error(`Attempt ${ctx.attempt+1} failed:`, error);
+      throw error;
+    }
   });
-
-await retry.execute(processCriticalOrder);
 ```
 
-### 4. AI Service Integration
-```typescript
-import { Retry, isRetriableLLMError } from 'super-retry';
+## 🚨 Error Handling Best Practices
 
-const llmRetry = new Retry({
+```typescript
+// Conditional retry example
+const retry = new Retry({
   strategy: 'exponential',
-  maxAttempts: 5,
-  initialDelayMs: 2000,
-  retryIf: isRetriableLLMError
-});
-
-async function queryAIService(prompt: string) {
-  const response = await fetch('https://api.ai-service.com/v1/chat', {
-    method: 'POST',
-    body: JSON.stringify({ prompt })
-  });
-  
-  if (response.status === 429) throw { code: 'rate_limited' };
-  return response.json();
-}
-
-const aiResponse = await llmRetry.execute(() => 
-  queryAIService('Explain quantum computing')
-);
-```
-
-### 5. Custom Backoff Strategy
-```typescript
-import { Retry, registerStrategy } from 'super-retry';
-
-registerStrategy('fibonacci', (attempt, baseDelay) => {
-  const sequence = [1, 1, 2, 3, 5, 8];
-  return sequence[Math.min(attempt, sequence.length - 1)] * baseDelay;
-});
-
-const retry = new Retry({
-  strategy: 'fibonacci',
-  maxAttempts: 6,
-  initialDelayMs: 150
-});
-
-await retry.execute(uploadLargeFile);
-```
-
-### 6. Observability Integration
-```typescript
-import { Retry, withOpenTelemetry } from 'super-retry';
-import { trace } from '@opentelemetry/api';
-
-const retry = new Retry({
   maxAttempts: 3,
-  strategy: 'fixed',
-  initialDelayMs: 500
+  initialDelayMs: 1000,
+  retryIf: (error: unknown) => {
+    if (error instanceof NetworkError) return true;
+    if (error instanceof APIError) return error.statusCode === 429;
+    return false;
+  }
 });
+```
 
+## 📊 Observability Integration
+
+```typescript
+import { withOpenTelemetry } from 'super-retry/observability';
+
+const retry = new Retry({ /* config */ });
 withOpenTelemetry(retry);
 
-async function paymentProcessing() {
-  const span = trace.getTracer('payments').startSpan('process-payment');
-  // Payment logic here
-  span.end();
-}
-
-await retry.execute(paymentProcessing);
+// All retries now emit OpenTelemetry spans
 ```
 
-## API Reference 📚
+## 🤝 Community & Support
 
-### Retry Class
-```typescript
-class Retry {
-  constructor(options: RetryOptions);
-  use(middleware: Middleware): this;
-  execute<T>(task: () => Promise<T>): Promise<T>;
-}
-```
+### Found an Issue? 🐛
+Please [report it on GitHub](https://github.com/khizerarshad/super-retry/issues/new) - appreciate all bug reports!
 
-### Policy Configuration
-```typescript
-interface RetryOptions {
-  maxAttempts: number;
-  initialDelayMs: number;
-  strategy: BackoffStrategy;
-  retryIf?: (error: unknown) => boolean;
-}
-```
+### Want to Contribute? 💻
+Check out [contribution guide](https://github.com/khizerarshad/super-retry/blob/main/CONTRIBUTING.md) and help me improve Super-Retry!
 
-## Advanced Topics 🔭
+### Need Help? ❓
+Join the [Discussions](https://github.com/khizerarshad/super-retry/discussions) forum to:
+- Ask questions
+- Share use cases
+- Request new features
+- Show off your implementations
 
-### Custom Strategies
-```typescript
-import { registerStrategy } from 'super-retry';
+## 📜 License
 
-registerStrategy('custom-backoff', (attempt, initialDelay) => {
-  return Math.min(initialDelay * (attempt ** 2), 5000);
-});
-```
-
-### OpenTelemetry Integration
-```mermaid
-graph LR
-  A[Retry Attempt] --> B[OTel Span]
-  B --> C[Add Events]
-  C --> D[Set Status]
-  D --> E{Success?}
-  E -->|Yes| F[OK Status]
-  E -->|No| G[Error Status]
-  style F fill:#4CAF50,stroke:#388E3C
-  style G fill:#f44336,stroke:#d32f2f
-```
-
-## Contributing 🤝
-
-1. Fork the repository  
-2. Install dependencies: `npm ci`  
-3. Run tests: `npm test`  
-4. Commit changes: `git cz`  
-5. Open a PR!  
+MIT License - See [LICENSE](https://github.com/khizerarshad/super-retry/blob/main/LICENSE) for full text
 
 ---
 
-**License**: MIT | **Author**: Khizer Arshad | **Version**: 1.1.0
+**Project Maintainer**: [Khizer Arshad](https://github.com/khizerarshad)  
+**Latest Version**: 1.2.0  
+**Status**: Actively Maintained 🟢

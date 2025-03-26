@@ -1,11 +1,18 @@
 import { BackoffStrategyFn } from './types';
 
-const strategies = new Map<string, BackoffStrategyFn>();
+// Initialize with built-in strategies
+const strategyRegistry = new Map<string, BackoffStrategyFn>([
+  ['fixed', (_, base) => base],
+  ['exponential', (attempt, base) => base * Math.pow(2, attempt)],
+  ['jitter', (attempt, base) => base * Math.pow(2, attempt) * (0.5 + Math.random())]
+]);
 
 export function registerStrategy(name: string, strategyFn: BackoffStrategyFn) {
-  strategies.set(name, strategyFn);
+  strategyRegistry.set(name, strategyFn);
 }
 
-export function getStrategy(name: string): BackoffStrategyFn | undefined {
-  return strategies.get(name);
+export function getStrategy(name: string): BackoffStrategyFn {
+  const strategy = strategyRegistry.get(name);
+  if (!strategy) throw new Error(`Strategy "${name}" not registered`);
+  return strategy;
 }

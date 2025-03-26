@@ -16,8 +16,13 @@ export type BackoffStrategyFn = (attempt: number, initialDelayMs: number) => num
 
 export type BuiltInBackoffStrategy = 'fixed' | 'exponential' | 'jitter';
 
-export type BackoffStrategy = BuiltInBackoffStrategy | string; // Allow custom strategies
+// Update BackoffStrategy type to include function signatures
+export type BackoffStrategy = 
+  | BuiltInBackoffStrategy 
+  | string // For registered strategies
+  | BackoffStrategyFn; // Direct function strategies
 
 export interface RetryWithTelemetry extends Retry {
   on(event: 'retry', listener: (event: RetryEvent) => void): void;
 }
+

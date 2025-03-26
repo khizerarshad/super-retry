@@ -1,9 +1,21 @@
 {
   "name": "super-retry",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "Robust retry library with middleware, policies, and OpenTelemetry integration",
-  "main": "dist/core/retry.js",
-  "types": "dist/core/retry.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./strategies": {
+      "import": "./dist/strategies.js",
+      "require": "./dist/strategies.js",
+      "types": "./dist/strategies.d.ts"
+    }
+  },
   "files": ["dist"],
   "scripts": {
     "build": "tsc",
